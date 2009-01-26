@@ -29,6 +29,9 @@ __END__
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
+ <link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico" />
+ <meta name="description" content="<%= @title %>" />
+ <meta name="keywords" content="ruby, rails, non-profit, overnight website challenge, #webchallege, flickr, twitter, competition, charity" />
  <title><%= @title %></title>
  <style>
    body {
@@ -41,12 +44,17 @@ __END__
        font-family: helvetica,arial,clean,sans-serif;
    }
    div#wrapper {
-     margin: 1em auto;
-       width: 80%;
-       border: 10px solid #8B0000;
-       padding: 1em;
-       background-color: #fff;
-       text-align: left;
+      margin: 1em auto;
+      width: 80%;
+      border: 10px solid #8B0000;
+      padding: 1em;
+      background-color: #fff;
+      text-align: left;
+   }
+   div#wrapper .logo {
+     float: left;
+     width: 100px;
+     padding: 20px; 
    }
    div#wrapper ul#nav-menu {
      list-style-type: none;
@@ -71,6 +79,12 @@ __END__
      padding: 0 15px 0 0;
      float: left;
    }
+   div#sponsors ul {
+     list-style-type: none;
+   }
+   div#sponsors img {
+     border: none;
+   }
    div#table {
      padding: 5px;
    }
@@ -78,13 +92,14 @@ __END__
 </head>
 <body>
  <div id="wrapper">
+   <img src="/images/rubymn.gif" alt='<%= @title %>' title='<%= @title %>' class="logo"/>
    <h1 id="title"><%= @title %></h1>
     <ul id="nav-menu">
       <li><a href="#statuses">Statuses</a></li>
       <li><a href="#photos">Photos</a></li>
-      <li><a href="#members">Members</a></li>
+      <li><a href="#members">Team Members</a></li>
       <li><a href="#links">Links</a></li>
-      <li><a href="#sponsors">Sponsors</a></li>
+      <li><a href="#sponsors">Visit out sponsors!</a></li>
     </ul>
     <%= yield %>
  </div>
@@ -95,12 +110,9 @@ __END__
  
 <div id="statuses">
   <h3>Twitter statuses (current members with unprotected updates)</h3>
- <span style="float:right;"><img
-src="http://www.f1webchallenge.com/images/uploads/teams/logos/27/normal_obeypreviewwx3.gif?1226623795"
-alt='<%= @title %>' /></span>
  <ul>
    <% for status in @friends_timeline %>
-     <li><%= status.text %> by <a href='<%=
+     <li><%= status.text.gsub(/<((https?|ftp|irc):[^'">\s]+)>/xi, %Q{<a href="\\1">\\1</a>}) %> by <a href='<%=
 "http://twitter.com/#{status.user.screen_name}" %>'><%=
 status.user.screen_name %></a> on
        <a href='<%= "http://twitter.com/#{status.user.screen_name}/statuses/#{status.id}"
@@ -154,8 +166,14 @@ status.user.screen_name %></a> on
 <div id="sponsors">
   <h3>Sponsors</h3>
   <ul>
-    <li><a href="http://www.trms.com/">Tightrope Media Systems: Digital Signage and Broadcast From Your Web Browser</a></li>
-    <li><a href="http://github.com">Github: Secure source code hosting and collaborative development</a></li>
+    <li><a href="http://www.trms.com/"><img src="/images/TRMS_logo.png" width="400" alt="Tightrope Media Systems logo"/><p>Tightrope Media Systems: Digital Signage and Broadcast From Your Web Browser</p></a>
+      <blockquote>Tightrope Media Systems has provided funding for team t-shirts, team
+      website hosting, and non-profit website hosting on a virtual private
+      server for 1 year.</blockquote>
+    </li>
+    <li><a href="http://github.com"><img src="/images/github_logo.png" width="300" alt="Github logo"/><p>Github: Secure source code hosting and collaborative development</p></a>
+      <blockquote>GitHub is providing the Ruby.mn webchallenge team with a free account to host the private repositories of our non-profits.</blockquote>
+    </li>
   </ul>
 </div>
 

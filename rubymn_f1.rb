@@ -33,7 +33,7 @@ __END__
  <meta name="description" content="<%= @title %>" />
  <meta name="keywords" content="ruby, rails, non-profit, overnight website challenge, #webchallege, flickr, twitter, competition, charity" />
  <title><%= @title %></title>
- <style>
+ <style type="text/css">
    body {
        margin-top: 2%;
        margin-left: 20%;
@@ -92,7 +92,7 @@ __END__
 </head>
 <body>
  <div id="wrapper">
-   <img src="/images/rubymn.gif" alt='<%= @title %>' title='<%= @title %>' class="logo"/>
+   <img src="/images/rubymn.gif" alt="<%= @title %>" title="<%= @title %>" class="logo"/>
    <h1 id="title"><%= @title %></h1>
     <ul id="nav-menu">
       <li><a href="#statuses">Statuses</a></li>
@@ -125,7 +125,7 @@ status.user.screen_name %></a> on
 <div id="photos">
   <h3>Flickr photos (public) tagged '<a href='<%= "http://flickr.com/photos/tags/#{@flickr_tag}" %>'><%= @flickr_tag %></a>'</h3>
   <% for photo in @photos %>
-    <a href='<%= photo.url_photopage %>'><img src='<%= "#{photo.url(:square)}" %>' alt='<%= photo.title %>' title='<%= photo.title %>' /></a>
+    <a href='<%= photo.url_photopage %>'><img src='<%= "#{photo.url(:square)}" %>' alt="<%= photo.title %>" title="<%= photo.title %>" /></a>
   <% end %>
 </div>
 
@@ -158,7 +158,7 @@ status.user.screen_name %></a> on
   Overnight Website Challenge</a></li>
     <li><a
   href="http://www.f1webchallenge.com/teams/27-Ruby-mn-2-2">Team page on event web site</a></li>
-    <li>Non-profit organization from 2008: <a href="http://www.littlebrothersmn.org/">Little Brothers of Minnesota</li>
+    <li>Non-profit organization from 2008: <a href="http://www.littlebrothersmn.org/">Little Brothers of Minnesota</a></li>
     <li><a href="http://github.com/rubymn-f1">Team Ruby.mn on github</a></li>
   </ul>
 </div>

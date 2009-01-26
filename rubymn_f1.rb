@@ -99,7 +99,7 @@ __END__
       <li><a href="#photos">Photos</a></li>
       <li><a href="#members">Team Members</a></li>
       <li><a href="#links">Links</a></li>
-      <li><a href="#sponsors">Visit out sponsors!</a></li>
+      <li><a href="#sponsors">Visit our sponsors!</a></li>
     </ul>
     <%= yield %>
  </div>

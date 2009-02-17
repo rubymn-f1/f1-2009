@@ -4,6 +4,10 @@ require 'flickr_fu'
  
 gem('twitter4r', '0.3.0')
 require('twitter')
+
+configure do
+  Cache = {}      # Create a new cache
+end
  
 get '/' do
   twitter = Twitter::Client.new(:login => ENV['F1_TWITTER_ACCOUNT'], :password => ENV['F1_TWITTER_PASSWORD'])
@@ -16,7 +20,12 @@ get '/' do
   @friends_timeline = twitter.timeline_for(:friends)
   @friends = twitter.my(:friends)
  
+  # Cache['index'] ||= erb :index
   erb :index
+end
+
+get '/clear' do
+  Cache.clear
 end
  
 use_in_file_templates!
@@ -53,8 +62,8 @@ __END__
    }
    div#wrapper .logo {
      float: left;
-     width: 100px;
-     padding: 20px; 
+     height: 100px;
+     margin-right: 25px;
    }
    div#wrapper ul#nav-menu {
      list-style-type: none;
@@ -68,6 +77,9 @@ __END__
    }
    div#members ul {
      list-style-type: none;
+   }
+   div#header {
+     height: 120px;
    }
    div#members ul li {
      height: 40px;
@@ -88,19 +100,40 @@ __END__
    div#table {
      padding: 5px;
    }
+   div#statuses ul {
+     list-style-type:none;
+   }
+   li.status {
+     border-bottom: 1px solid lightgray;
+     padding-bottom: 10px;
+   }
+   li.status img {
+    vertical-align:middle;
+    padding: 0 15px 0 0;
+    float: left;
+    height: 20px;
+    border: none;
+   }
+   span.smaller {
+     font-size: small;
+     color:gray;
+   }
  </style>
 </head>
 <body>
  <div id="wrapper">
-   <img src="/images/rubymn.gif" alt="<%= @title %>" title="<%= @title %>" class="logo"/>
-   <h1 id="title"><%= @title %></h1>
-    <ul id="nav-menu">
-      <li><a href="#statuses">Statuses</a></li>
-      <li><a href="#photos">Photos</a></li>
-      <li><a href="#members">Team Members</a></li>
-      <li><a href="#links">Links</a></li>
-      <li><a href="#sponsors">Visit out sponsors!</a></li>
-    </ul>
+   <div id='header'>
+     <img src="/images/rubymn.gif" alt="<%= @title %>" title="<%= @title %>" class="logo"/>
+      <h1 id="title">Team 'ruby.mn'</h1>
+      <h4>Team activity stream for <a href='http://www.f1webchallenge.com/'>F1 Overnight Website Challenge</a> event</h4>
+       <ul id="nav-menu">
+         <li><a href="#statuses">Statuses</a></li>
+         <li><a href="#photos">Photos</a></li>
+         <li><a href="#members">Team Members</a></li>
+         <li><a href="#links">Links</a></li>
+         <li><a href="#sponsors">Visit our Sponsors!</a></li>
+       </ul>
+   </div>
     <%= yield %>
  </div>
 </body>
@@ -109,14 +142,13 @@ __END__
 @@ index
  
 <div id="statuses">
-  <h3>Twitter statuses (current members with unprotected updates)</h3>
+  <h3>Twitter statuses</h3>
  <ul>
    <% for status in @friends_timeline %>
-     <li><%= status.text.gsub(/<((https?|ftp|irc):[^'">\s]+)>/xi, %Q{<a href="\\1">\\1</a>}) %> by <a href='<%=
-"http://twitter.com/#{status.user.screen_name}" %>'><%=
-status.user.screen_name %></a> on
-       <a href='<%= "http://twitter.com/#{status.user.screen_name}/statuses/#{status.id}"
-%>'><%= status.created_at.strftime("%m/%d/%Y") %></a>
+     <li class='status'><a href='<%=
+ "http://twitter.com/#{status.user.screen_name}" %>'><img src="<%= status.user.profile_image_url %>" alt="<%= status.user.name %>" title="<%= status.user.name %>"/> <%=
+ status.user.screen_name %></a>&nbsp;<%= status.text.gsub(/((https?:\/\/|www\.)([-\w\.]+)+(:\d+)?(\/([\w\/_\.]*(\?\S+)?)?)?)/, %Q{<a href="\\1">\\1</a>}).gsub(/@(\w+)/, %Q{<a href="http://twitter.com/\\1">@\\1</a>}) %>&nbsp;
+       <span class='smaller'><a href='<%= "http://twitter.com/#{status.user.screen_name}/statuses/#{status.id}"%>'><%= status.created_at.strftime("%m/%d/%Y") %></a></span>
      </li>
    <% end %>
  </ul>
@@ -144,6 +176,7 @@ status.user.screen_name %></a> on
 <div id="alumni">
   <h3>Alumni (2008)</h3>
   <ul>
+    <li>Lars Klevan</li>
     <li><a
   href="http://graphickarma.com/">Alicia Weller</a></li>
     <li><a

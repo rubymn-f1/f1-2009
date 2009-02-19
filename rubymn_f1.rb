@@ -6,12 +6,15 @@ gem('twitter4r', '0.3.0')
 require('twitter')
 
 configure do
-  Cache = {}      # Create a new cache
+  APP_CONFIG = YAML.load_file("config/configuration.yml")
+  Cache = {}
 end
  
-get '/' do
-  twitter = Twitter::Client.new(:login => ENV['F1_TWITTER_ACCOUNT'], :password => ENV['F1_TWITTER_PASSWORD'])
-  flickr = Flickr.new(:key => ENV['F1_FLICKR_KEY'], :secret => ENV['F1_FLICKR_SECRET'])
+get '/' do    
+  p "account #{APP_CONFIG}"  
+    
+  twitter = Twitter::Client.new(:login => APP_CONFIG['twitter']['account'], :password => APP_CONFIG['twitter']['password'])
+  flickr = Flickr.new(:key => APP_CONFIG['flickr']['key'], :secret => APP_CONFIG['flickr']['secret'])
   
   @flickr_tag = 'f1-web-challenge'
   @title = "f1.ruby.mn | Team 'ruby.mn' | F1 Overnight Website Challenge"

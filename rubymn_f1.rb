@@ -16,10 +16,9 @@ get '/' do
   @flickr_tag = 'f1-web-challenge'
   @title = "f1.ruby.mn | Team 'ruby.mn' | F1 Overnight Website Challenge"
  
-  @photos = flickr.photos.search(:tags => @flickr_tag, :per_page => 20, :page => 1)
-  @friends_timeline = twitter.timeline_for(:friends)
-  @friends = twitter.my(:friends)
- 
+  @photos = flickr.photos.search(:tags => @flickr_tag, :per_page => 29, :page => 1)
+  @friends_timeline = twitter.timeline_for(:friends) rescue nil
+  @friends = twitter.my(:friends) rescue nil 
   cache(erb(:index))
 end
  
@@ -44,30 +43,28 @@ __END__
        margin-right: 20%;
        padding: 5px;
        text-align: center;
-       background-color: #660000;
+       background-color: maroon;
        font-family: helvetica,arial,clean,sans-serif;
    }
    div#wrapper {
       margin: 1em auto;
-      width: 80%;
-      border: 10px solid #8B0000;
+      width: 95%;
+      border: 5px solid #ccc;
       padding: 1em;
       background-color: #fff;
       text-align: left;
       -moz-border-radius: 5%;
       -webkit-border-radius: 20px;
    }
+   div#wrapper img {
+     border: 1px solid lightgray;
+     margin: 1px;
+   }
    div#wrapper .logo {
      float: left;
      height: 100px;
      margin-right: 25px;
-   }
-   div#wrapper ul#nav-menu {
-     list-style-type: none;
-   }
-   div#wrapper ul#nav-menu li {
-     display:inline;
-     padding: 5px;
+     border: 2px solid #8B0000;
    }
    div#wrapper li {
      margin-top: .5em;
@@ -115,6 +112,33 @@ __END__
      font-size: small;
      color:gray;
    }
+   div#navcontainer {
+     width: 200px;
+   }
+   ul#navlist
+   {
+    margin-left: 0;
+    padding-left: 0;
+    white-space: nowrap;
+   }
+   #navlist li
+   {
+    display: inline;
+    list-style-type: none;
+   }
+   #navlist a { padding: 4px 3px; }
+   #navlist a:link, #navlist a:visited
+   {
+   color: #fff;
+    background-color: maroon;
+    text-decoration: none;
+   }
+   #navlist a:hover
+   {
+    color: #fff;
+    background-color: #8B0000;
+    text-decoration: none;
+   }
  </style>
 </head>
 <body>
@@ -122,14 +146,15 @@ __END__
    <div id='header'>
      <img src="/images/rubymn.gif" alt="<%= @title %>" title="<%= @title %>" class="logo"/>
       <h1 id="title">Team 'ruby.mn'</h1>
-      <h4>Team activity stream for <a href='http://www.f1webchallenge.com/'>F1 Overnight Website Challenge</a> event</h4>
-       <ul id="nav-menu">
-         <li><a href="#statuses">Statuses</a></li>
-         <li><a href="#photos">Photos</a></li>
-         <li><a href="#members">Team Members</a></li>
-         <li><a href="#links">Links</a></li>
-         <li><a href="#sponsors">Visit our Sponsors!</a></li>
-       </ul>
+      <div id="navcontainer">
+        <ul id="navlist">
+          <li><a href="#statuses">Statuses</a></li>
+          <li><a href="#photos">Photos</a></li>
+          <li><a href="#members">Team Members</a></li>
+          <li><a href="#links">Links</a></li>
+          <li><a href="#sponsors">Visit our Sponsors!</a></li>
+        </ul>
+      </div>
    </div>
     <%= yield %>
  </div>
@@ -142,17 +167,17 @@ __END__
   <h3>Twitter statuses</h3>
  <ul>
    <% for status in @friends_timeline %>
-     <li class='status'><a href='<%=
- "http://twitter.com/#{status.user.screen_name}" %>'><img src="<%= status.user.profile_image_url %>" alt="<%= status.user.name %>" title="<%= status.user.name %>"/> <%=
- status.user.screen_name %></a>&nbsp;<%= status.text.gsub(/((https?:\/\/|www\.)([-\w\.]+)+(:\d+)?(\/([\w\/_\.]*(\?\S+)?)?)?)/, %Q{<a href="\\1">\\1</a>}).gsub(/@(\w+)/, %Q{<a href="http://twitter.com/\\1">@\\1</a>}) %>&nbsp;
-       <span class='smaller'><a href='<%= "http://twitter.com/#{status.user.screen_name}/statuses/#{status.id}"%>'><%= status.created_at.strftime("%m/%d/%Y") %></a></span>
-     </li>
-   <% end %>
+      <li class='status'><a href='<%=
+  "http://twitter.com/#{status.user.screen_name}" %>'><img src="<%= status.user.profile_image_url %>" alt="<%= status.user.name %>" title="<%= status.user.name %>"/> <%=
+  status.user.screen_name %></a>&nbsp;<%= status.text.gsub(/((https?:\/\/|www\.)([-\w\.]+)+(:\d+)?(\/([\w\/_\.]*(\?\S+)?)?)?)/, %Q{<a href="\\1">\\1</a>}).gsub(/@(\w+)/, %Q{<a href="http://twitter.com/\\1">@\\1</a>}) %>&nbsp;
+        <span class='smaller'><a href='<%= "http://twitter.com/#{status.user.screen_name}/statuses/#{status.id}"%>'><%= status.created_at.strftime("%m/%d/%Y") %></a></span>
+      </li>
+    <% end %>
  </ul>
 </div>
 
 <div id="photos">
-  <h3>Flickr photos (public) tagged '<a href='<%= "http://flickr.com/photos/tags/#{@flickr_tag}" %>'><%= @flickr_tag %></a>'</h3>
+  <h3>Flickr photos <a href='<%= "http://flickr.com/photos/tags/#{@flickr_tag}" %>'><%= "##{@flickr_tag}" %></a></h3>
   <% for photo in @photos %>
     <a href='<%= photo.url_photopage %>'><img src='<%= "#{photo.url(:square)}" %>' alt="<%= photo.title %>" title="<%= photo.title %>" /></a>
   <% end %>
@@ -161,12 +186,12 @@ __END__
 <div id="members">
   <h3>Current Members on twitter</h3>
   <ul>
-    <% for friend in @friends %>
-      <li><img src="<%= friend.profile_image_url %>" alt="<%= friend.name %>" title="<%= friend.name %>"/>
-        <a href='<%= "http://twitter.com/#{friend.screen_name}" %>'><%= friend.name %></a>
-        <%= "<br/>Web: <a href='#{friend.url}'>#{friend.url}</a>" if friend.url %>
-      </li>
-    <% end %>
+     <% for friend in @friends %>
+       <li><img src="<%= friend.profile_image_url %>" alt="<%= friend.name %>" title="<%= friend.name %>"/>
+         <a href='<%= "http://twitter.com/#{friend.screen_name}" %>'><%= friend.name %></a>
+         <%= "<br/>Web: <a href='#{friend.url}'>#{friend.url}</a>" if friend.url %>
+       </li>
+     <% end %>
   </ul>
 </div>
 

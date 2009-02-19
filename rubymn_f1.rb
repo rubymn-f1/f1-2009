@@ -56,10 +56,6 @@ __END__
       -moz-border-radius: 5%;
       -webkit-border-radius: 20px;
    }
-   div#wrapper img {
-     border: 1px solid lightgray;
-     margin: 1px;
-   }
    div#wrapper .logo {
      float: left;
      height: 100px;
@@ -107,6 +103,10 @@ __END__
     float: left;
     height: 20px;
     border: none;
+   }
+   div#photos img {
+     border: 1px solid lightgray;
+     margin: 1px;
    }
    span.smaller {
      font-size: small;

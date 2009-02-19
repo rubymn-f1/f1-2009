@@ -1,18 +1,15 @@
 require 'rubygems'
 require 'sinatra'
-require 'flickr_fu'
- 
+require 'flickr_fu' 
 gem('twitter4r', '0.3.0')
 require('twitter')
+require 'lib/caching'
 
 configure do
   APP_CONFIG = YAML.load_file("config/configuration.yml")
-  Cache = {}
 end
- 
-get '/' do    
-  p "account #{APP_CONFIG}"  
-    
+
+get '/' do  
   twitter = Twitter::Client.new(:login => APP_CONFIG['twitter']['account'], :password => APP_CONFIG['twitter']['password'])
   flickr = Flickr.new(:key => APP_CONFIG['flickr']['key'], :secret => APP_CONFIG['flickr']['secret'])
   
@@ -23,12 +20,7 @@ get '/' do
   @friends_timeline = twitter.timeline_for(:friends)
   @friends = twitter.my(:friends)
  
-  # Cache['index'] ||= erb :index
-  erb :index
-end
-
-get '/clear' do
-  Cache.clear
+  cache(erb(:index))
 end
  
 use_in_file_templates!
@@ -62,6 +54,8 @@ __END__
       padding: 1em;
       background-color: #fff;
       text-align: left;
+      -moz-border-radius: 5%;
+      -webkit-border-radius: 20px;
    }
    div#wrapper .logo {
      float: left;

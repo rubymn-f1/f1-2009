@@ -1,0 +1,100 @@
+body {
+	margin-top: 2%;
+	margin-left: 20%;
+	margin-right: 20%;
+	padding: 5px;
+	text-align: center;
+	background-color: maroon;
+	font-family: helvetica,arial,clean,sans-serif;
+}
+div#wrapper {
+	margin: 1em auto;
+	width: 95%;
+	border: 5px solid #ccc;
+	padding: 1em;
+	background-color: #fff;
+	text-align: left;
+	-moz-border-radius: 5%;
+	-webkit-border-radius: 20px;
+}
+div#wrapper .logo {
+	float: left;
+	height: 100px;
+	margin-right: 25px;
+	border: 2px solid #8B0000;
+}
+div#wrapper li {
+	margin-top: .5em;
+}
+div#header {
+	height: 120px;
+}
+div#friends img {
+	height: 30px;
+	border: 1px solid lightgray;
+}
+div#sponsors ul {
+	list-style-type: none;
+}
+div#sponsors img {
+	border: none;
+}
+div#table {
+	padding: 5px;
+}
+div#statuses ul {
+	list-style-type:none;
+}
+li.status {
+	border-bottom: 1px solid lightgray;
+	padding-bottom: 10px;
+	font-size: 15px;
+}
+li.status img {
+	vertical-align:middle;
+	padding: 0 15px 0 0;
+	float: left;
+	height: 20px;
+	border: none;
+}
+div#photos img {
+	border: 1px solid lightgray;
+	margin: 1px;
+}
+span.smaller {
+	font-size: 10px;
+	color:gray;
+	border-bottom: 1px solid lightgray;
+}
+span.smaller a {
+	border: none;
+}
+div#navcontainer {
+	float:right;
+	width: 200px;
+	margin-right:100px;
+}
+ul#navlist
+{
+	margin-left: 0;
+	padding-left: 0;
+	white-space: nowrap;
+}
+#navlist li
+{
+	display: inline;
+	list-style-type: none;
+}
+#navlist a { padding: 4px 3px; }
+#navlist a:link, #navlist a:visited
+{
+	color: #fff;
+	background-color: maroon;
+	text-decoration: none;
+}
+#navlist a:hover
+{
+	color: #fff;
+	background-color: #8B0000;
+	text-decoration: none;
+}

@@ -35,7 +35,7 @@
                     break;
             }
             if (opts.fade) {
-                tip.css({opacity: 0, display: 'block', visibility: 'visible'}).animate({opacity: 0.8});
+                tip.css({opacity: 0, display: 'block', visibility: 'visible'}).animate({opacity: 0.85});
             } else {
                 tip.css({visibility: 'visible'});
             }

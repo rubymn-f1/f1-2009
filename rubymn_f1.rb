@@ -42,7 +42,7 @@ __END__
  <script type='text/javascript' src='/javascripts/jquery.tipsy.js'></script>
  <script type='text/javascript'>
   $(document).ready(function() {
-    $('div#friends a.tipsy').tipsy({gravity: 'n'});
+    $('div#friends a.tipsy').tipsy({gravity: 'n', fade: true});
     $('a.tipsy').click(function() {
       return false;
     });

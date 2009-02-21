@@ -42,7 +42,7 @@ __END__
  <script type='text/javascript' src='/javascripts/jquery.tipsy.js'></script>
  <script type='text/javascript'>
   $(document).ready(function() {
-    $('div#friends a.tipsy').tipsy({gravity: 'n', fade: true});
+    $('span#friends a.tipsy').tipsy({gravity: 'n', fade: true});
     $('a.tipsy').click(function() {
       return false;
     });
@@ -51,20 +51,13 @@ __END__
 </head>
 <body>
  <div id="wrapper">
-   <div id="navcontainer">
-     <ul id="navlist">
-       <li><a href="#statuses">Statuses</a></li>
-       <li><a href="#photos">Photos</a></li>
-       <li><a href="#links">Links</a></li>
-       <li><a href="#sponsors">Sponsors</a></li>
-     </ul>
-   </div>
    <div id='header'>
-     <img src="/images/rubymn.gif" alt="<%= @title %>" title="<%= @title %>" class="logo"/>
-      <h1 id="title">Team 'ruby.mn'</h1>
-      <div id='friends'><% @friends.each do |f| %><a title="<img src='<%= f.profile_image_url %>' alt='<%= f.name %>' title='<%= f.name %>'/><br/><br/><%= f.name %><br/><%= f.url %><br/><%= f.description %>" href='#' class='tipsy'><img src="<%= f.profile_image_url %>" alt="<%= f.name %>"/></a><% end %></div>
+     <span class='logo'>
+       <img src="/images/rubymn-f1-logo.gif" alt="<%= @title %>" title="<%= @title %>" />
+     </span>
+     <span class='logotext' id='friends'><% @friends.each do |f| %><a title="<img src='<%= f.profile_image_url %>' alt='<%= f.name %>' title='<%= f.name %>'/><br/><br/><%= f.name %><br/><%= f.url %><br/><%= f.description %>" href='#' class='tipsy'><img src="<%= f.profile_image_url %>" alt="<%= f.name %>"/></a><% end %></span>
    </div>
-    <%= yield %>
+    <div><%= yield %></div>
  </div>
  
  <script type="text/javascript">
@@ -82,7 +75,7 @@ __END__
 @@ index
  
 <div id="statuses">
-  <h3>Current Team</h3>
+  <h3><img src='/images/twitter.ico' style='border:none;'/>&nbsp;Latest tweets</h3>
  <ul>
    <% for status in @friends_timeline %>
       <li class='status'><a href='<%= "http://twitter.com/#{status.user.screen_name}" %>'><img src="<%= status.user.profile_image_url %>" alt="<%= status.user.name %>" title="<%= status.user.name %>"/> <%=
@@ -94,7 +87,7 @@ __END__
 </div>
 
 <div id="photos">
-  <h3>Flickr photos <a href='<%= "http://flickr.com/photos/tags/#{@flickr_tag}" %>'><%= "##{@flickr_tag}" %></a></h3>
+  <h3><img src='/images/flickr.ico' style='border:none;'/>&nbsp;Latest photos <a href='<%= "http://flickr.com/photos/tags/#{@flickr_tag}" %>'><%= "##{@flickr_tag}" %></a></h3>
   <% for photo in @photos %>
     <a href='<%= photo.url_photopage %>'><img src='<%= "#{photo.url(:square)}" %>' alt="<%= photo.title %>" title="<%= photo.title %>" /></a>
   <% end %>
@@ -108,7 +101,7 @@ __END__
     <li><a
   href="http://www.f1webchallenge.com/teams/27-Ruby-mn-2-2">Team page on event web site</a></li>
     <li>Non-profit organization from 2008: <a href="http://www.littlebrothersmn.org/">Little Brothers of Minnesota</a></li>
-    <li><a href="http://github.com/rubymn-f1">Team Ruby.mn on github</a></li>
+    <li><a href="http://github.com/rubymn-f1/f1-2009/tree/master">Souce code for this site available on github!</a></li>
   </ul>
   <div id="alumni">
     <h3>Alumni (2008)</h3>

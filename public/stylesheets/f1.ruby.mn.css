@@ -17,21 +17,29 @@ div#wrapper {
 	-moz-border-radius: 5%;
 	-webkit-border-radius: 20px;
 }
-div#wrapper .logo {
-	float: left;
-	height: 100px;
-	margin-right: 25px;
-	border: 2px solid #8B0000;
+div#header span.logo {
+	position: absolute; 
+	top: 80px; 
+	left: 310px;
+	width: 445px; 
+	height: 124px;
+}
+div#header span.logotext {
+	position: absolute; 
+	top: 170px; 
+	left: 450px;
+	margin-bottom: 110px;
+}
+div#header span.logotext img {
+	height: 17px;
+	border: 1px solid lightgray;
 }
 div#wrapper li {
 	margin-top: .5em;
 }
 div#header {
 	height: 120px;
-}
-div#friends img {
-	height: 30px;
-	border: 1px solid lightgray;
+	margin-bottom: 35px;
 }
 div#sponsors ul {
 	list-style-type: none;
@@ -68,33 +76,4 @@ span.smaller {
 }
 span.smaller a {
 	border: none;
-}
-div#navcontainer {
-	float:right;
-	width: 200px;
-	margin-right:100px;
-}
-ul#navlist
-{
-	margin-left: 0;
-	padding-left: 0;
-	white-space: nowrap;
-}
-#navlist li
-{
-	display: inline;
-	list-style-type: none;
-}
-#navlist a { padding: 4px 3px; }
-#navlist a:link, #navlist a:visited
-{
-	color: #fff;
-	background-color: maroon;
-	text-decoration: none;
-}
-#navlist a:hover
-{
-	color: #fff;
-	background-color: #8B0000;
-	text-decoration: none;
 }

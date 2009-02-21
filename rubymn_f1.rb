@@ -1,22 +1,25 @@
 require 'rubygems'
 require 'sinatra'
-require 'flickr_fu'
- 
+require 'flickr_fu' 
 gem('twitter4r', '0.3.0')
 require('twitter')
- 
-get '/' do
-  twitter = Twitter::Client.new(:login => ENV['F1_TWITTER_ACCOUNT'], :password => ENV['F1_TWITTER_PASSWORD'])
-  flickr = Flickr.new(:key => ENV['F1_FLICKR_KEY'], :secret => ENV['F1_FLICKR_SECRET'])
+require 'lib/caching'
+
+configure do
+  APP_CONFIG = YAML.load_file("config/configuration.yml")
+end
+
+get '/' do  
+  twitter = Twitter::Client.new(:login => APP_CONFIG['twitter']['account'], :password => APP_CONFIG['twitter']['password'])
+  flickr = Flickr.new(:key => APP_CONFIG['flickr']['key'], :secret => APP_CONFIG['flickr']['secret'])
   
   @flickr_tag = 'f1-web-challenge'
   @title = "f1.ruby.mn | Team 'ruby.mn' | F1 Overnight Website Challenge"
  
-  @photos = flickr.photos.search(:tags => @flickr_tag, :per_page => 20, :page => 1)
-  @friends_timeline = twitter.timeline_for(:friends)
-  @friends = twitter.my(:friends)
- 
-  erb :index
+  @photos = flickr.photos.search(:tags => @flickr_tag, :per_page => 29, :page => 1)
+  @friends_timeline = twitter.timeline_for(:friends) rescue []
+  @friends = twitter.my(:friends) rescue [] 
+  cache(erb(:index))
 end
  
 use_in_file_templates!
@@ -33,122 +36,61 @@ __END__
  <meta name="description" content="<%= @title %>" />
  <meta name="keywords" content="ruby, rails, non-profit, overnight website challenge, #webchallege, flickr, twitter, competition, charity" />
  <title><%= @title %></title>
- <style type="text/css">
-   body {
-       margin-top: 2%;
-       margin-left: 20%;
-       margin-right: 20%;
-       padding: 5px;
-       text-align: center;
-       background-color: #660000;
-       font-family: helvetica,arial,clean,sans-serif;
-   }
-   div#wrapper {
-      margin: 1em auto;
-      width: 80%;
-      border: 10px solid #8B0000;
-      padding: 1em;
-      background-color: #fff;
-      text-align: left;
-   }
-   div#wrapper .logo {
-     float: left;
-     width: 100px;
-     padding: 20px; 
-   }
-   div#wrapper ul#nav-menu {
-     list-style-type: none;
-   }
-   div#wrapper ul#nav-menu li {
-     display:inline;
-     padding: 5px;
-   }
-   div#wrapper li {
-     margin-top: .5em;
-   }
-   div#members ul {
-     list-style-type: none;
-   }
-   div#members ul li {
-     height: 40px;
-     padding-bottom: 20px;
-     border-bottom: 1px solid lightgray;
-   }
-   div#members img {
-     vertical-align:middle;
-     padding: 0 15px 0 0;
-     float: left;
-   }
-   div#sponsors ul {
-     list-style-type: none;
-   }
-   div#sponsors img {
-     border: none;
-   }
-   div#table {
-     padding: 5px;
-   }
- </style>
+ <link rel="stylesheet" media="screen,projection" type="text/css" href="/stylesheets/f1.ruby.mn.css" />
+ <link rel="stylesheet" media="screen,projection" type="text/css" href="/stylesheets/tipsy.css" />
+ <script type='text/javascript' src='http://ajax.googleapis.com/ajax/libs/jquery/1.3.1/jquery.min.js'></script>
+ <script type='text/javascript' src='/javascripts/jquery.tipsy.js'></script>
+ <script type='text/javascript'>
+  $(document).ready(function() {
+    $('span#friends a.tipsy').tipsy({gravity: 'n', fade: true});
+    $('a.tipsy').click(function() {
+      return false;
+    });
+  });
+ </script>
 </head>
 <body>
  <div id="wrapper">
-   <img src="/images/rubymn.gif" alt="<%= @title %>" title="<%= @title %>" class="logo"/>
-   <h1 id="title"><%= @title %></h1>
-    <ul id="nav-menu">
-      <li><a href="#statuses">Statuses</a></li>
-      <li><a href="#photos">Photos</a></li>
-      <li><a href="#members">Team Members</a></li>
-      <li><a href="#links">Links</a></li>
-      <li><a href="#sponsors">Visit our sponsors!</a></li>
-    </ul>
-    <%= yield %>
+   <div id='header'>
+     <span class='logo'>
+       <img src="/images/rubymn-f1-logo.gif" alt="<%= @title %>" title="<%= @title %>" />
+     </span>
+     <span class='logotext' id='friends'><% @friends.each do |f| %><a title="<img src='<%= f.profile_image_url %>' alt='<%= f.name %>' title='<%= f.name %>'/><br/><br/><%= f.name %><br/><%= f.url %><br/><%= f.description %>" href='#' class='tipsy'><img src="<%= f.profile_image_url %>" alt="<%= f.name %>"/></a><% end %></span>
+   </div>
+    <div><%= yield %></div>
  </div>
+ 
+ <script type="text/javascript">
+ var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+ document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+ </script>
+ <script type="text/javascript">
+ try {
+ var pageTracker = _gat._getTracker("UA-7564990-1");
+ pageTracker._trackPageview();
+ } catch(err) {}</script>
 </body>
 </html>
  
 @@ index
  
 <div id="statuses">
-  <h3>Twitter statuses (current members with unprotected updates)</h3>
+  <h3><img src='/images/twitter.ico' style='border:none;'/>&nbsp;Latest tweets</h3>
  <ul>
    <% for status in @friends_timeline %>
-     <li><%= status.text.gsub(/<((https?|ftp|irc):[^'">\s]+)>/xi, %Q{<a href="\\1">\\1</a>}) %> by <a href='<%=
-"http://twitter.com/#{status.user.screen_name}" %>'><%=
-status.user.screen_name %></a> on
-       <a href='<%= "http://twitter.com/#{status.user.screen_name}/statuses/#{status.id}"
-%>'><%= status.created_at.strftime("%m/%d/%Y") %></a>
-     </li>
-   <% end %>
+      <li class='status'><a href='<%= "http://twitter.com/#{status.user.screen_name}" %>'><img src="<%= status.user.profile_image_url %>" alt="<%= status.user.name %>" title="<%= status.user.name %>"/> <%=
+  status.user.screen_name %></a>&nbsp;<%= status.text.gsub(/((https?:\/\/|www\.)([-\w\.]+)+(:\d+)?(\/([\w\/_\.]*(\?\S+)?)?)?)/, %Q{<a href="\\1">\\1</a>}).gsub(/@(\w+)/, %Q{<a href="http://twitter.com/\\1">@\\1</a>}) %>&nbsp;
+        <span class='smaller'><a href='<%= "http://twitter.com/#{status.user.screen_name}/statuses/#{status.id}"%>'><%= status.created_at.strftime("%m/%d/%Y") %></a></span>
+      </li>
+    <% end %>
  </ul>
 </div>
 
 <div id="photos">
-  <h3>Flickr photos (public) tagged '<a href='<%= "http://flickr.com/photos/tags/#{@flickr_tag}" %>'><%= @flickr_tag %></a>'</h3>
+  <h3><img src='/images/flickr.ico' style='border:none;'/>&nbsp;Latest photos <a href='<%= "http://flickr.com/photos/tags/#{@flickr_tag}" %>'><%= "##{@flickr_tag}" %></a></h3>
   <% for photo in @photos %>
     <a href='<%= photo.url_photopage %>'><img src='<%= "#{photo.url(:square)}" %>' alt="<%= photo.title %>" title="<%= photo.title %>" /></a>
   <% end %>
-</div>
-
-<div id="members">
-  <h3>Current Members on twitter</h3>
-  <ul>
-    <% for friend in @friends %>
-      <li><img src="<%= friend.profile_image_url %>" alt="<%= friend.name %>" title="<%= friend.name %>"/>
-        <a href='<%= "http://twitter.com/#{friend.screen_name}" %>'><%= friend.name %></a>
-        <%= "<br/>Web: <a href='#{friend.url}'>#{friend.url}</a>" if friend.url %>
-      </li>
-    <% end %>
-  </ul>
-</div>
-
-<div id="alumni">
-  <h3>Alumni (2008)</h3>
-  <ul>
-    <li><a
-  href="http://graphickarma.com/">Alicia Weller</a></li>
-    <li><a
-    href="http://smokejumperit.com/">Robert Fischer</a></li>
-  </ul>
 </div>
 
 <div id="links">
@@ -159,8 +101,18 @@ status.user.screen_name %></a> on
     <li><a
   href="http://www.f1webchallenge.com/teams/27-Ruby-mn-2-2">Team page on event web site</a></li>
     <li>Non-profit organization from 2008: <a href="http://www.littlebrothersmn.org/">Little Brothers of Minnesota</a></li>
-    <li><a href="http://github.com/rubymn-f1">Team Ruby.mn on github</a></li>
+    <li><a href="http://github.com/rubymn-f1/f1-2009/tree/master">Souce code for this site available on github!</a></li>
   </ul>
+  <div id="alumni">
+    <h3>Alumni (2008)</h3>
+    <ul>
+      <li>Lars Klevan</li>
+      <li><a
+    href="http://graphickarma.com/">Alicia Weller</a></li>
+      <li><a
+      href="http://smokejumperit.com/">Robert Fischer</a></li>
+    </ul>
+  </div>
 </div>
 
 <div id="sponsors">
